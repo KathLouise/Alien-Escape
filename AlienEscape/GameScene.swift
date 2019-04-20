@@ -10,80 +10,123 @@ import SpriteKit
 import GameplayKit
 
 class GameScene: SKScene {
-    
-    private var label : SKLabelNode?
-    private var spinnyNode : SKShapeNode?
+    var playerNode : SKSpriteNode!
+    var enemyNode : SKSpriteNode!
+    var enemyVelocity : CGPoint!
+    var lastUpdateTime = CFTimeInterval()
+    var gameOverNode : SKLabelNode!
+    var gameOver = false
+    var coinNode : SKSpriteNode!
+    var scoreNode : SKLabelNode!
+    var nCoins = 0
+    var explosionSound : SKAction!
+    var coinSound : SKAction!
     
     override func didMove(to view: SKView) {
+        playerNode = self.childNode(withName: "Player") as? SKSpriteNode
+        enemyNode = self.childNode(withName: "Enemy") as? SKSpriteNode
+        gameOverNode = self.childNode(withName: "GameOverText") as? SKLabelNode
+        coinNode = self.childNode(withName: "Coin") as? SKSpriteNode
+        scoreNode = self.childNode(withName: "Score") as? SKLabelNode
+        gameOverNode.isHidden = true
+        playerNode.zPosition = 1.0
+        enemyNode.zPosition = 1.0
+        gameOverNode.zPosition = 1.0
+        coinNode.zPosition = 1.0
+        scoreNode.zPosition = 1.0
         
-        // Get label node from scene and store it for use later
-        self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
-        if let label = self.label {
-            label.alpha = 0.0
-            label.run(SKAction.fadeIn(withDuration: 2.0))
-        }
-        
-        // Create shape node to use during mouse interaction
-        let w = (self.size.width + self.size.height) * 0.05
-        self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w), cornerRadius: w * 0.3)
-        
-        if let spinnyNode = self.spinnyNode {
-            spinnyNode.lineWidth = 2.5
-            
-            spinnyNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(Double.pi), duration: 1)))
-            spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
-                                              SKAction.fadeOut(withDuration: 0.5),
-                                              SKAction.removeFromParent()]))
-        }
+        enemyVelocity = CGPoint(x: 300.0, y: 300.0)
+        explosionSound = SKAction.playSoundFileNamed("explosion", waitForCompletion: false)
+        coinSound = SKAction.playSoundFileNamed("coin", waitForCompletion: false)
     }
-    
-    
-    func touchDown(atPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.green
-            self.addChild(n)
-        }
-    }
-    
-    func touchMoved(toPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.blue
-            self.addChild(n)
-        }
-    }
-    
-    func touchUp(atPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.red
-            self.addChild(n)
-        }
-    }
-    
+
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let label = self.label {
-            label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
+        if(gameOver){
+            restartGame()
         }
         
-        for t in touches { self.touchDown(atPoint: t.location(in: self)) }
+        let touch = touches.first
+        let location = touch!.location(in: self)
+        playerNode.position = location
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchMoved(toPoint: t.location(in: self)) }
+        let touch = touches.first
+        let location = touch!.location(in: self)
+        playerNode.position = location
     }
-    
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
-    }
-    
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
-    }
-    
     
     override func update(_ currentTime: TimeInterval) {
-        // Called before each frame is rendered
+        var timeSinceLastUpdate = 0.0
+        if(lastUpdateTime != 0){
+            timeSinceLastUpdate = currentTime - lastUpdateTime
+        }
+        lastUpdateTime = currentTime
+        
+        enemyNode.position.x += enemyVelocity.x * CGFloat(timeSinceLastUpdate)
+        enemyNode.position.y += enemyVelocity.y * CGFloat(timeSinceLastUpdate)
+        
+        if(enemyNode.position.x < -(scene?.frame.width)!/2.0){
+            enemyNode.position.x = -(scene?.frame.width)!/2.0
+            enemyVelocity.x *= -1
+        }
+        
+        if(enemyNode.position.x > (scene?.frame.width)!/2.0){
+            enemyNode.position.x = (scene?.frame.width)!/2.0
+            enemyVelocity.x *= -1
+        }
+        
+        if(enemyNode.position.y < -(scene?.frame.height)!/2.0){
+            enemyNode.position.y = -(scene?.frame.height)!/2.0
+            enemyVelocity.y *= -1
+        }
+        
+        if(enemyNode.position.y > (scene?.frame.height)!/2.0){
+            enemyNode.position.y = (scene?.frame.height)!/2.0
+            enemyVelocity.y *= -1
+        }
+        
+        //verifica colisao
+        if(playerNode.intersects(enemyNode)){
+            if(!playerNode.isHidden){
+                endGame()
+            }
+        }
+        
+        if(!gameOver){
+            if(playerNode.intersects(coinNode)){
+                AddScore()
+            }
+        }
+    }
+    
+    func endGame(){
+        playerNode.isHidden = true
+        gameOver = true
+        gameOverNode.isHidden = false
+        
+        run(explosionSound)
+    }
+    
+    func restartGame(){
+        playerNode.isHidden = false
+        gameOver = false
+        gameOverNode.isHidden = true
+        
+        nCoins += 0
+        scoreNode.text = String(nCoins)
+    }
+    
+    func AddScore(){
+        nCoins += 1
+        scoreNode.text = String(nCoins)
+        
+        let randX = arc4random_uniform(UInt32(self.frame.width))
+        let randY = arc4random_uniform(UInt32(self.frame.height))
+        
+        coinNode.position.x = CGFloat(randX) - self.frame.width/2.0
+        coinNode.position.y = CGFloat(randY) - self.frame.height/2.0
+        
+        run(coinSound)
     }
 }

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CD18F7A5226A2FC900C4D097 /* explosion.wav in Resources */ = {isa = PBXBuildFile; fileRef = CD18F7A3226A2FC800C4D097 /* explosion.wav */; };
+		CD18F7A6226A2FC900C4D097 /* coin.wav in Resources */ = {isa = PBXBuildFile; fileRef = CD18F7A4226A2FC900C4D097 /* coin.wav */; };
 		CD87F7AB226A24BC00ACD589 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD87F7AA226A24BC00ACD589 /* AppDelegate.swift */; };
 		CD87F7AD226A24BC00ACD589 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = CD87F7AC226A24BC00ACD589 /* GameScene.sks */; };
 		CD87F7AF226A24BC00ACD589 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = CD87F7AE226A24BC00ACD589 /* Actions.sks */; };
@@ -37,6 +39,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CD18F7A3226A2FC800C4D097 /* explosion.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = explosion.wav; sourceTree = "<group>"; };
+		CD18F7A4226A2FC900C4D097 /* coin.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = coin.wav; sourceTree = "<group>"; };
 		CD87F7A7226A24BC00ACD589 /* AlienEscape.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AlienEscape.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD87F7AA226A24BC00ACD589 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CD87F7AC226A24BC00ACD589 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -80,6 +84,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CD18F7A2226A2FB000C4D097 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				CD18F7A4226A2FC900C4D097 /* coin.wav */,
+				CD18F7A3226A2FC800C4D097 /* explosion.wav */,
+			);
+			path = Sounds;
+			sourceTree = "<group>";
+		};
 		CD87F79E226A24BB00ACD589 = {
 			isa = PBXGroup;
 			children = (
@@ -103,6 +116,7 @@
 		CD87F7A9226A24BC00ACD589 /* AlienEscape */ = {
 			isa = PBXGroup;
 			children = (
+				CD18F7A2226A2FB000C4D097 /* Sounds */,
 				CD87F7AA226A24BC00ACD589 /* AppDelegate.swift */,
 				CD87F7AC226A24BC00ACD589 /* GameScene.sks */,
 				CD87F7AE226A24BC00ACD589 /* Actions.sks */,
@@ -238,6 +252,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD18F7A5226A2FC900C4D097 /* explosion.wav in Resources */,
+				CD18F7A6226A2FC900C4D097 /* coin.wav in Resources */,
 				CD87F7B6226A24BC00ACD589 /* Main.storyboard in Resources */,
 				CD87F7AD226A24BC00ACD589 /* GameScene.sks in Resources */,
 				CD87F7B8226A24C000ACD589 /* Assets.xcassets in Resources */,
